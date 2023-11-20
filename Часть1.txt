@@ -1,0 +1,91 @@
+CREATE TABLE Clients (
+    ID NUMBER PRIMARY KEY,
+    First_Name VARCHAR2(50),
+    Last_Name VARCHAR2(50),
+    Address VARCHAR2(100),
+    Phone VARCHAR2(20)
+);
+
+CREATE TABLE Cars (
+    ID NUMBER PRIMARY KEY,
+    Brand VARCHAR2(50),
+    Model VARCHAR2(50),
+    Year NUMBER,
+    Registration_Number VARCHAR2(20)
+);
+
+CREATE TABLE Orders (
+    ID NUMBER PRIMARY KEY,
+    Client_ID NUMBER REFERENCES Clients(ID),
+    Car_ID NUMBER REFERENCES Cars(ID),
+    Start_Date DATE,
+    End_Date DATE,
+    Rental_Cost NUMBER
+);
+
+-- Наполнение таблицы Клиенты
+INSERT INTO Clients (ID, First_Name, Last_Name, Address, Phone)
+VALUES (1, 'том', 'Гномов', 'Москва', '123-456-7890');
+
+INSERT INTO Clients (ID, First_Name, Last_Name, Address, Phone)
+VALUES (2, 'Миля', 'Тренко', 'Санкт-Петербург', '987-654-3210');
+
+-- Наполнение таблицы Автомобили
+INSERT INTO Cars (ID, Brand, Model, Year, Registration_Number)
+VALUES (1, 'Mercedes', 'W100', 1963, 'А111АА');
+
+INSERT INTO Cars (ID, Brand, Model, Year, Registration_Number)
+VALUES (2, 'BMW', 'X5', 2019, 'A112QQ');
+
+-- Наполнение таблицы Заказы
+INSERT INTO Orders (ID, Client_ID, Car_ID, Start_Date, End_Date, Rental_Cost)
+VALUES (1, 1, 1, TO_DATE('2023-01-01', 'YYYY-MM-DD'), TO_DATE('2023-01-03', 'YYYY-MM-DD'), 100);
+
+INSERT INTO Orders (ID, Client_ID, Car_ID, Start_Date, End_Date, Rental_Cost)
+VALUES (2, 2, 2, TO_DATE('2021-01-01', 'YYYY-MM-DD'), TO_DATE('2021-01-03', 'YYYY-MM-DD'), 200);
+
+--CRUD Операции
+--Создание
+INSERT INTO Clients (ID, First_Name, Last_Name, Address, Phone)
+VALUES (3, 'Антон', 'Апостолов', 'Екатеринбург', '144-522-2130');
+
+--Получение информации о клентах
+--SELECT * FROM Clients
+
+--Обновление информации о клиенте
+/*UPDATE Clients
+SET First_name = 'Том'
+WHERE ID = 1;*/
+
+/*Удаление клиента
+DELETE FROM Clients
+WHERE ID = 3;*/
+
+CREATE TABLE OrderHistory (
+    OrderID NUMBER REFERENCES Orders(ID),
+    Change_Date DATE,
+    Old_Start_Date DATE,
+    Old_End_Date DATE,
+    Old_Rental_Cost NUMBER
+);
+
+--Отчет об истории изменения заказов
+--SELECT * FROM OrderHistory
+--WHERE OrderID = 1;
+
+--отчет о финансовой деятельности сервиса за период
+/*SELECT SUM(Rental_Cost) AS TotalRevenue
+FROM Orders
+WHERE Start_Date >= TO_DATE('2019-01-01', 'YYYY-MM-DD')
+  AND End_Date <= TO_DATE('2023-12-31', 'YYYY-MM-DD');*/
+  
+--Отчет о клиентах
+/*SELECT Clients.First_Name, Clients.Last_Name, Cars.Brand, Cars.Model, Orders.Rental_Cost
+FROM Clients
+JOIN Orders ON Clients.ID = Orders.Client_ID
+JOIN Cars ON Orders.Car_ID = Cars.ID;*/
+
+--Подбор(поиск) авто по параметрам
+SELECT *
+FROM Cars
+WHERE Brand = 'BMW' AND Year <= 2020;
